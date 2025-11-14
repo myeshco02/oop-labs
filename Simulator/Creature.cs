@@ -1,3 +1,5 @@
+﻿using Simulator;
+
 namespace Simulator.Creatures;
 
 public class Creature
@@ -41,6 +43,30 @@ public class Creature
     }
 
     public string Info => $"{Name} [{Level}]";
+
+    public void Go(Direction direction)
+    {
+        var directionName = direction.ToString().ToLowerInvariant();
+        Console.WriteLine($"{Name} goes {directionName}.");
+    }
+
+    public void Go(Direction[]? directions)
+    {
+        if (directions is null)
+        {
+            return;
+        }
+
+        foreach (var direction in directions)
+        {
+            Go(direction);
+        }
+    }
+
+    public void Go(string? directions)
+    {
+        Go(DirectionParser.Parse(directions));
+    }
 
     private static string FormatLabel(string? value, int maxLength)
     {
