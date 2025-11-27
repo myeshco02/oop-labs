@@ -39,9 +39,8 @@ public abstract class Creature
         }
     }
 
-    public virtual string Info => $"{Name} [{Level}]";
-
     public abstract int Power { get; }
+    public abstract string Info { get; }
 
     public void Go(Direction direction)
     {
@@ -65,5 +64,11 @@ public abstract class Creature
     public void Go(string? directions)
     {
         Go(DirectionParser.Parse(directions));
+    }
+
+    public override string ToString()
+    {
+        var typeName = GetType().Name.ToUpperInvariant();
+        return $"{typeName}: {Info}";
     }
 }

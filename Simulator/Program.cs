@@ -15,6 +15,8 @@ internal class Program
         TestElfsAndOrcs();
         Console.WriteLine();
         TestValidators();
+        Console.WriteLine();
+        TestObjectsToString();
     }
 
     private static void TestCreatures()
@@ -139,5 +141,18 @@ internal class Program
 
         a = new() { Description = "Mice           are great", Size = 40 };
         Console.WriteLine(a.Info);
+    }
+
+    private static void TestObjectsToString()
+    {
+        object[] myObjects =
+        {
+            new Animals() { Description = "dogs"},
+            new Birds { Description = "  eagles ", Size = 10 },
+            new Elf("e", 15, -3),
+            new Orc("morgash", 6, 4),
+        };
+        Console.WriteLine("\nMy objects:");
+        foreach (var o in myObjects) Console.WriteLine(o);
     }
 }

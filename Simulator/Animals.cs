@@ -12,6 +12,12 @@ public class Animals
 
     public uint Size { get; set; } = 3;
 
-    public string Info => $"{Description} <{Size}>";
+    public virtual string Info => $"{Description} <{Size}>";
+
+    public override string ToString()
+    {
+        var typeName = GetType().Name.ToUpperInvariant();
+        return $"{typeName}: {Info}";
+    }
 
 }
