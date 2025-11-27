@@ -39,5 +39,5 @@ public class Elf : Creature
 
     public override int Power => 8 * Level + 2 * Agility;
 
-    private static int ClampStat(int value) => Math.Clamp(value, 0, 10);
+    private static int ClampStat(int value) => Validator.Limiter(value, 0, 10);
 }

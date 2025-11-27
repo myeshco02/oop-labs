@@ -10,13 +10,13 @@ public abstract class Creature
     public string Name
     {
         get => _name;
-        init => _name = FormatLabel(value, 25);
+        init => _name = Validator.Shortener(value, 3, 25, '#');
     }
 
     public int Level
     {
         get => _level;
-        init => _level = ClampLevel(value);
+        init => _level = Validator.Limiter(value, 1, 10);
     }
 
     public Creature()
@@ -65,32 +65,5 @@ public abstract class Creature
     public void Go(string? directions)
     {
         Go(DirectionParser.Parse(directions));
-    }
-
-    private static string FormatLabel(string? value, int maxLength)
-    {
-        var formatted = (value ?? string.Empty).Trim();
-
-        if (formatted.Length > maxLength)
-        {
-            formatted = formatted[..maxLength].TrimEnd();
-        }
-
-        if (formatted.Length < 3)
-        {
-            formatted = formatted.PadRight(3, '#');
-        }
-
-        if (formatted.Length > 0 && char.IsLetter(formatted[0]) && char.IsLower(formatted[0]))
-        {
-            formatted = char.ToUpperInvariant(formatted[0]) + formatted[1..];
-        }
-
-        return formatted;
-    }
-
-    private static int ClampLevel(int value)
-    {
-        return Math.Clamp(value, 1, 10);
     }
 }

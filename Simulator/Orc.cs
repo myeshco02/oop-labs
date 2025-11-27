@@ -39,5 +39,5 @@ public class Orc : Creature
 
     public override int Power => 7 * Level + 3 * Rage;
 
-    private static int ClampStat(int value) => Math.Clamp(value, 0, 10);
+    private static int ClampStat(int value) => Validator.Limiter(value, 0, 10);
 }
