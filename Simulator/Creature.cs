@@ -2,7 +2,7 @@
 
 namespace Simulator.Creatures;
 
-public class Creature
+public abstract class Creature
 {
     private string _name = "Unknown";
     private int _level = 1;
@@ -29,10 +29,7 @@ public class Creature
         Level = level;
     }
 
-    public void SayHi()
-    {
-        Console.WriteLine($"Hi, I'm {Name}, my level is {Level}.");
-    }
+    public abstract void SayHi();
 
     public void Upgrade()
     {
@@ -42,7 +39,9 @@ public class Creature
         }
     }
 
-    public string Info => $"{Name} [{Level}]";
+    public virtual string Info => $"{Name} [{Level}]";
+
+    public abstract int Power { get; }
 
     public void Go(Direction direction)
     {
