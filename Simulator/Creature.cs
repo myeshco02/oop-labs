@@ -1,4 +1,5 @@
-﻿using Simulator;
+﻿using System.Linq;
+using Simulator;
 
 namespace Simulator.Creatures;
 
@@ -29,7 +30,7 @@ public abstract class Creature
         Level = level;
     }
 
-    public abstract void SayHi();
+    public abstract string Greeting();
 
     public void Upgrade()
     {
@@ -42,29 +43,19 @@ public abstract class Creature
     public abstract int Power { get; }
     public abstract string Info { get; }
 
-    public void Go(Direction direction)
-    {
-        var directionName = direction.ToString().ToLowerInvariant();
-        Console.WriteLine($"{Name} goes {directionName}.");
-    }
+    public string Go(Direction direction) => direction.ToString().ToLowerInvariant();
 
-    public void Go(Direction[]? directions)
+    public string[] Go(Direction[]? directions)
     {
         if (directions is null)
         {
-            return;
+            return Array.Empty<string>();
         }
 
-        foreach (var direction in directions)
-        {
-            Go(direction);
-        }
+        return directions.Select(Go).ToArray();
     }
 
-    public void Go(string? directions)
-    {
-        Go(DirectionParser.Parse(directions));
-    }
+    public string[] Go(string? directions) => Go(DirectionParser.Parse(directions));
 
     public override string ToString()
     {

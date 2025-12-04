@@ -30,12 +30,10 @@ public class Elf : Creature
         {
             _agility = ClampStat(_agility + 1);
         }
-
-        Console.WriteLine($"{Name} is singing.");
     }
 
-    public override void SayHi() =>
-        Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my agility is {Agility}.");
+    public override string Greeting() =>
+        $"Hi, I'm {Name}, my level is {Level}, my agility is {Agility}.";
 
     public override int Power => 8 * Level + 2 * Agility;
     public override string Info => $"{Name} [{Level}][{Agility}]";

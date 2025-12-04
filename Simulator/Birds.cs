@@ -1,4 +1,6 @@
-﻿namespace Simulator.Creatures;
+﻿using Simulator;
+
+namespace Simulator.Creatures;
 
 public class Birds : Animals
 {

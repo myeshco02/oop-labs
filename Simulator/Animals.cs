@@ -1,3 +1,5 @@
+using Simulator;
+
 namespace Simulator.Creatures;
 
 public class Animals
