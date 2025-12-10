@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Simulator;
+﻿using Simulator;
+using Simulator.Maps;
 
 namespace Simulator.Creatures;
 
@@ -7,6 +7,8 @@ public abstract class Creature
 {
     private string _name = "Unknown";
     private int _level = 1;
+    private Map? _map;
+    private Point? _position;
 
     public string Name
     {
@@ -18,6 +20,18 @@ public abstract class Creature
     {
         get => _level;
         init => _level = Validator.Limiter(value, 1, 10);
+    }
+
+    public Map? Map
+    {
+        get => _map;
+        internal set => _map = value;
+    }
+
+    public Point? Position
+    {
+        get => _position;
+        internal set => _position = value;
     }
 
     public Creature()
@@ -43,19 +57,37 @@ public abstract class Creature
     public abstract int Power { get; }
     public abstract string Info { get; }
 
-    public string Go(Direction direction) => direction.ToString().ToLowerInvariant();
-
-    public string[] Go(Direction[]? directions)
+    /// <summary>
+    /// Place creature on a map in a given position.
+    /// </summary>
+    public void PlaceOnMap(Map map, Point position)
     {
-        if (directions is null)
+        if (map is null)
         {
-            return Array.Empty<string>();
+            throw new ArgumentNullException(nameof(map));
         }
 
-        return directions.Select(Go).ToArray();
+        map.Add(this, position);
     }
 
-    public string[] Go(string? directions) => Go(DirectionParser.Parse(directions));
+    /// <summary>
+    /// Move creature according to direction on the current map.
+    /// </summary>
+    public void Go(Direction direction)
+    {
+        if (Map is null || Position is null)
+        {
+            return;
+        }
+
+        var current = Position.Value;
+        var next = Map.Next(current, direction);
+
+        if (!next.Equals(current))
+        {
+            Map.Move(this, current, next);
+        }
+    }
 
     public override string ToString()
     {

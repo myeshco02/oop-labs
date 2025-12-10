@@ -4,19 +4,21 @@ namespace Simulator.Maps;
 
 public class SmallTorusMap : Map
 {
-    public int Size { get; }
+    private const int MaxSize = 20;
 
-    public SmallTorusMap(int size)
+    public SmallTorusMap(int sizeX, int sizeY)
+        : base(sizeX, sizeY)
     {
-        if (size < 5 || size > 20)
+        if (sizeX > MaxSize)
         {
-            throw new ArgumentOutOfRangeException(nameof(size), "Size must be between 5 and 20.");
+            throw new ArgumentOutOfRangeException(nameof(sizeX), $"SizeX must be at most {MaxSize}.");
         }
 
-        Size = size;
+        if (sizeY > MaxSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(sizeY), $"SizeY must be at most {MaxSize}.");
+        }
     }
-
-    public override bool Exist(Point p) => p.X >= 0 && p.X < Size && p.Y >= 0 && p.Y < Size;
 
     public override Point Next(Point p, Direction d)
     {
@@ -48,8 +50,8 @@ public class SmallTorusMap : Map
 
     private Point Wrap(Point p, int dx, int dy)
     {
-        int nx = Mod(p.X + dx, Size);
-        int ny = Mod(p.Y + dy, Size);
+        int nx = Mod(p.X + dx, SizeX);
+        int ny = Mod(p.Y + dy, SizeY);
         return new Point(nx, ny);
     }
 

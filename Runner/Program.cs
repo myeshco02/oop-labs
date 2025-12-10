@@ -1,5 +1,6 @@
 ﻿using Simulator;
 using Simulator.Creatures;
+using Simulator.Maps;
 
 Console.WriteLine("Starting Simulator!\n");
 
@@ -49,36 +50,25 @@ void TestCreatures()
 
 void TestDirections()
 {
+    var map = new SmallSquareMap(5);
     Creature c = new Orc("Shrek", 7);
+    c.PlaceOnMap(map, new Point(2, 2));
+
     Console.WriteLine(c.Greeting());
 
     Console.WriteLine("\n* Up");
-    var step = c.Go(Direction.Up);
-    Console.WriteLine($"{c.Name} goes {step}.");
+    c.Go(Direction.Up);
+    Console.WriteLine($"{c.Name} is at {c.Position}.");
 
     Console.WriteLine("\n* Right, Left, Left, Down");
     Direction[] directions =
     {
         Direction.Right, Direction.Left, Direction.Left, Direction.Down,
     };
-    var steps = c.Go(directions);
-    foreach (var s in steps)
+    foreach (var direction in directions)
     {
-        Console.WriteLine($"{c.Name} goes {s}.");
-    }
-
-    Console.WriteLine("\n* LRL");
-    steps = c.Go("LRL");
-    foreach (var s in steps)
-    {
-        Console.WriteLine($"{c.Name} goes {s}.");
-    }
-
-    Console.WriteLine("\n* xxxdR lyyLTyu");
-    steps = c.Go("xxxdR lyyLTyu");
-    foreach (var s in steps)
-    {
-        Console.WriteLine($"{c.Name} goes {s}.");
+        c.Go(direction);
+        Console.WriteLine($"{c.Name} is at {c.Position}.");
     }
 }
 
