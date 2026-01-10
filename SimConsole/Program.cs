@@ -15,6 +15,9 @@ switch (selection)
     case 2:
         Sim2();
         break;
+    case 3:
+        Sim3();
+        break;
 }
 
 int PromptSelection()
@@ -24,12 +27,13 @@ int PromptSelection()
         Console.WriteLine("Select simulation:");
         Console.WriteLine("1 - Sim1");
         Console.WriteLine("2 - Sim2");
+        Console.WriteLine("3 - Sim3");
         Console.Write("Choice: ");
         var input = Console.ReadLine()?.Trim();
-        if (input == "1" || input == "2")
+        if (input == "1" || input == "2" || input == "3")
         {
             Console.Clear();
-            return input == "1" ? 1 : 2;
+            return input == "1" ? 1 : input == "2" ? 2 : 3;
         }
 
         Console.WriteLine("Invalid choice. Try again.");
@@ -49,6 +53,29 @@ void Sim1()
 
 void Sim2()
 {
+    RunSimulation(BuildSim2());
+}
+
+void Sim3()
+{
+    var log = new SimulationLog(BuildSim2());
+    LogVisualizer visualizer = new(log);
+    int[] turns = { 5, 10, 15, 20 };
+
+    foreach (var turnIndex in turns)
+    {
+        Console.Clear();
+        visualizer.Draw(turnIndex);
+        Console.WriteLine();
+        var turn = log.TurnLogs[turnIndex];
+        Console.WriteLine($"Turn {turnIndex}: {turn.Mappable} moves {turn.Move}");
+        Console.WriteLine("Press any key for next view...");
+        Console.ReadKey(true);
+    }
+}
+
+Simulation BuildSim2()
+{
     SmallTorusMap map = new(8, 6);
     IMappable elf = new Elf("Elandor");
     IMappable orc = new Orc("Gorbag");
@@ -60,7 +87,7 @@ void Sim2()
     List<Point> points = [new(1, 1), new(2, 4), new(4, 1), new(6, 5), new(7, 2)];
     string moves = "urdlurrdlludrdluuldr";
 
-    RunSimulation(new Simulation(map, creatures, points, moves));
+    return new Simulation(map, creatures, points, moves);
 }
 
 void RunSimulation(Simulation simulation)

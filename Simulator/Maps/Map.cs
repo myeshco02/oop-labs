@@ -172,6 +172,22 @@ public abstract class Map
 
     public IReadOnlyList<IMappable> At(int x, int y) => At(new Point(x, y));
 
+    public Dictionary<Point, char> GetSymbols()
+    {
+        var symbols = new Dictionary<Point, char>();
+        foreach (var (point, mappables) in _mappables)
+        {
+            if (mappables.Count == 0)
+            {
+                continue;
+            }
+
+            symbols[point] = mappables.Count > 1 ? 'X' : mappables[0].Symbol;
+        }
+
+        return symbols;
+    }
+
     /// <summary>
     /// Next position to the point in a given direction.
     /// </summary>
