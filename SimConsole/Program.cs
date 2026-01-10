@@ -6,30 +6,83 @@ using Simulator.Maps;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-SmallSquareMap map = new(5);
-List<IMappable> creatures = [new Orc("Gorbag"), new Elf("Elandor")];
-List<Point> points = [new(2, 2), new(3, 1)];
-string moves = "dlrludl";
-
-Simulation simulation = new(map, creatures, points, moves);
-MapVisualizer mapVisualizer = new(simulation.Map);
-
-while (!simulation.Finished)
+var selection = PromptSelection();
+switch (selection)
 {
+    case 1:
+        Sim1();
+        break;
+    case 2:
+        Sim2();
+        break;
+}
+
+int PromptSelection()
+{
+    while (true)
+    {
+        Console.WriteLine("Select simulation:");
+        Console.WriteLine("1 - Sim1");
+        Console.WriteLine("2 - Sim2");
+        Console.Write("Choice: ");
+        var input = Console.ReadLine()?.Trim();
+        if (input == "1" || input == "2")
+        {
+            Console.Clear();
+            return input == "1" ? 1 : 2;
+        }
+
+        Console.WriteLine("Invalid choice. Try again.");
+        Console.WriteLine();
+    }
+}
+
+void Sim1()
+{
+    SmallSquareMap map = new(5);
+    List<IMappable> creatures = [new Orc("Gorbag"), new Elf("Elandor")];
+    List<Point> points = [new(2, 2), new(3, 1)];
+    string moves = "dlrludl";
+
+    RunSimulation(new Simulation(map, creatures, points, moves));
+}
+
+void Sim2()
+{
+    SmallTorusMap map = new(8, 6);
+    IMappable elf = new Elf("Elandor");
+    IMappable orc = new Orc("Gorbag");
+    IMappable rabbits = new Animals { Description = "Rabbits", Size = 12 };
+    IMappable eagles = new Birds { Description = "Eagles", Size = 4, CanFly = true };
+    IMappable ostriches = new Birds { Description = "Ostriches", Size = 6, CanFly = false };
+
+    List<IMappable> creatures = [elf, orc, rabbits, eagles, ostriches];
+    List<Point> points = [new(1, 1), new(2, 4), new(4, 1), new(6, 5), new(7, 2)];
+    string moves = "urdlurrdlludrdluuldr";
+
+    RunSimulation(new Simulation(map, creatures, points, moves));
+}
+
+void RunSimulation(Simulation simulation)
+{
+    MapVisualizer mapVisualizer = new(simulation.Map);
+
+    while (!simulation.Finished)
+    {
+        Console.Clear();
+        mapVisualizer.Draw();
+        Console.WriteLine();
+        var current = simulation.CurrentCreature;
+        Console.WriteLine($"Current: {current} moves {simulation.CurrentMoveName}");
+
+        Console.WriteLine("Press any key for next move...");
+        Console.ReadKey(true);
+
+        simulation.Turn();
+    }
+
     Console.Clear();
     mapVisualizer.Draw();
     Console.WriteLine();
-    var current = simulation.CurrentCreature;
-    var currentLabel = current is Creature creature ? creature.Name : current.ToString();
-    Console.WriteLine($"Current: {currentLabel} moves {simulation.CurrentMoveName}");
-
-    Console.WriteLine("Press any key for next move...");
-    Console.ReadKey(true);
-
-    simulation.Turn();
+    Console.WriteLine("Simulation finished.");
 }
-
-Console.Clear();
-mapVisualizer.Draw();
-Console.WriteLine();
-Console.WriteLine("Simulation finished.");

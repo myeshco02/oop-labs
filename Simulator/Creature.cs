@@ -66,6 +66,7 @@ public abstract class Creature : IMappable
         }
     }
 
+    public abstract char Symbol { get; }
     public abstract int Power { get; }
     public abstract string Info { get; }
 

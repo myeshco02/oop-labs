@@ -1,4 +1,3 @@
-using Simulator.Creatures;
 using Simulator.Maps;
 
 namespace SimConsole;
@@ -67,11 +66,6 @@ public class MapVisualizer
 
         var mappable = mappables[0];
 
-        return mappable switch
-        {
-            Orc => 'O',
-            Elf => 'E',
-            _ => '?',
-        };
+        return mappable.Symbol;
     }
 }

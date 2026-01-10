@@ -35,6 +35,7 @@ public class Orc : Creature
     public override string Greeting() =>
         $"Hi, I'm {Name}, my level is {Level}, my rage is {Rage}.";
 
+    public override char Symbol => 'O';
     public override int Power => 7 * Level + 3 * Rage;
     public override string Info => $"{Name} [{Level}][{Rage}]";
 
