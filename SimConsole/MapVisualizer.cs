@@ -33,8 +33,8 @@ public class MapVisualizer
             Console.Write(Box.Vertical);
             for (int x = 0; x < width; x++)
             {
-                var creatures = Map.At(x, y);
-                char symbol = GetSymbol(creatures);
+                var mappables = Map.At(x, y);
+                char symbol = GetSymbol(mappables);
                 Console.Write(symbol);
             }
 
@@ -53,21 +53,21 @@ public class MapVisualizer
         Console.WriteLine();
     }
 
-    private static char GetSymbol(IReadOnlyList<Creature> creatures)
+    private static char GetSymbol(IReadOnlyList<IMappable> mappables)
     {
-        if (creatures.Count == 0)
+        if (mappables.Count == 0)
         {
             return ' ';
         }
 
-        if (creatures.Count > 1)
+        if (mappables.Count > 1)
         {
             return 'X';
         }
 
-        var creature = creatures[0];
+        var mappable = mappables[0];
 
-        return creature switch
+        return mappable switch
         {
             Orc => 'O',
             Elf => 'E',
@@ -75,4 +75,3 @@ public class MapVisualizer
         };
     }
 }
-

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Simulator;
-using Simulator.Creatures;
 
 namespace Simulator.Maps;
 
@@ -11,7 +10,7 @@ public abstract class Map
 {
     private const int MinSize = 5;
 
-    private readonly Dictionary<Point, List<Creature>> _creatures = new();
+    private readonly Dictionary<Point, List<IMappable>> _mappables = new();
 
     public int SizeX { get; }
     public int SizeY { get; }
@@ -39,13 +38,13 @@ public abstract class Map
     public virtual bool Exist(Point p) => p.X >= 0 && p.X < SizeX && p.Y >= 0 && p.Y < SizeY;
 
     /// <summary>
-    /// Add creature to the map at given position.
+    /// Add object to the map at given position.
     /// </summary>
-    public virtual void Add(Creature creature, Point position)
+    public virtual void Add(IMappable mappable, Point position)
     {
-        if (creature is null)
+        if (mappable is null)
         {
-            throw new ArgumentNullException(nameof(creature));
+            throw new ArgumentNullException(nameof(mappable));
         }
 
         if (!Exist(position))
@@ -53,71 +52,71 @@ public abstract class Map
             throw new ArgumentOutOfRangeException(nameof(position), "Position must be inside the map.");
         }
 
-        if (creature.Map is not null && creature.Map != this)
+        if (mappable.Map is not null && mappable.Map != this)
         {
-            throw new InvalidOperationException("Creature already belongs to another map.");
+            throw new InvalidOperationException("Object already belongs to another map.");
         }
 
-        if (!_creatures.TryGetValue(position, out var creaturesAtPosition))
+        if (!_mappables.TryGetValue(position, out var mappablesAtPosition))
         {
-            creaturesAtPosition = new List<Creature>();
-            _creatures[position] = creaturesAtPosition;
+            mappablesAtPosition = new List<IMappable>();
+            _mappables[position] = mappablesAtPosition;
         }
 
-        if (!creaturesAtPosition.Contains(creature))
+        if (!mappablesAtPosition.Contains(mappable))
         {
-            creaturesAtPosition.Add(creature);
+            mappablesAtPosition.Add(mappable);
         }
 
-        creature.Map = this;
-        creature.Position = position;
+        mappable.Map = this;
+        mappable.Position = position;
     }
 
-    public void Add(Creature creature, int x, int y) => Add(creature, new Point(x, y));
+    public void Add(IMappable mappable, int x, int y) => Add(mappable, new Point(x, y));
 
     /// <summary>
-    /// Remove creature from the map (if present).
+    /// Remove object from the map (if present).
     /// </summary>
-    public virtual void Remove(Creature creature)
+    public virtual void Remove(IMappable mappable)
     {
-        if (creature is null)
+        if (mappable is null)
         {
-            throw new ArgumentNullException(nameof(creature));
+            throw new ArgumentNullException(nameof(mappable));
         }
 
-        if (creature.Map != this || creature.Position is null)
+        if (mappable.Map != this || mappable.Position is null)
         {
             return;
         }
 
-        var position = creature.Position.Value;
+        var position = mappable.Position.Value;
 
-        if (_creatures.TryGetValue(position, out var creaturesAtPosition))
+        if (_mappables.TryGetValue(position, out var mappablesAtPosition))
         {
-            creaturesAtPosition.Remove(creature);
-            if (creaturesAtPosition.Count == 0)
+            mappablesAtPosition.Remove(mappable);
+            if (mappablesAtPosition.Count == 0)
             {
-                _creatures.Remove(position);
+                _mappables.Remove(position);
             }
         }
 
-        creature.Map = null;
-        creature.Position = null;
+        mappable.Map = null;
+        mappable.Position = null;
     }
 
     /// <summary>
-    /// Move creature between two positions.
+    /// Move object between two positions.
     /// </summary>
-    public virtual void Move(Creature creature, Point from, Point to)
+    public virtual void Move(IMappable mappable, Point from, Point to)
     {
-        if (creature is null)
+        if (mappable is null)
         {
-            throw new ArgumentNullException(nameof(creature));
+            throw new ArgumentNullException(nameof(mappable));
         }
 
-        if (creature.Map != this)
+        if (mappable.Map != this)
         {
-            throw new InvalidOperationException("Creature does not belong to this map.");
+            throw new InvalidOperationException("Object does not belong to this map.");
         }
 
         if (!Exist(from))
@@ -135,43 +134,43 @@ public abstract class Map
             return;
         }
 
-        if (_creatures.TryGetValue(from, out var fromList))
+        if (_mappables.TryGetValue(from, out var fromList))
         {
-            fromList.Remove(creature);
+            fromList.Remove(mappable);
             if (fromList.Count == 0)
             {
-                _creatures.Remove(from);
+                _mappables.Remove(from);
             }
         }
 
-        if (!_creatures.TryGetValue(to, out var toList))
+        if (!_mappables.TryGetValue(to, out var toList))
         {
-            toList = new List<Creature>();
-            _creatures[to] = toList;
+            toList = new List<IMappable>();
+            _mappables[to] = toList;
         }
 
-        if (!toList.Contains(creature))
+        if (!toList.Contains(mappable))
         {
-            toList.Add(creature);
+            toList.Add(mappable);
         }
 
-        creature.Position = to;
+        mappable.Position = to;
     }
 
     /// <summary>
-    /// Creatures at given point.
+    /// Objects at given point.
     /// </summary>
-    public IReadOnlyList<Creature> At(Point p)
+    public IReadOnlyList<IMappable> At(Point p)
     {
-        if (_creatures.TryGetValue(p, out var creaturesAtPosition))
+        if (_mappables.TryGetValue(p, out var mappablesAtPosition))
         {
-            return creaturesAtPosition;
+            return mappablesAtPosition;
         }
 
-        return Array.Empty<Creature>();
+        return Array.Empty<IMappable>();
     }
 
-    public IReadOnlyList<Creature> At(int x, int y) => At(new Point(x, y));
+    public IReadOnlyList<IMappable> At(int x, int y) => At(new Point(x, y));
 
     /// <summary>
     /// Next position to the point in a given direction.

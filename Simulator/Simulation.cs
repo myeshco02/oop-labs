@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Simulator.Creatures;
 using Simulator.Maps;
 
 namespace Simulator;
@@ -13,17 +12,17 @@ public class Simulation
     public Map Map { get; }
 
     /// <summary>
-    /// Creatures moving on the map.
+    /// Objects moving on the map.
     /// </summary>
-    public List<Creature> Creatures { get; }
+    public List<IMappable> Creatures { get; }
 
     /// <summary>
-    /// Starting positions of creatures.
+    /// Starting positions of objects.
     /// </summary>
     public List<Point> Positions { get; }
 
     /// <summary>
-    /// Cyclic list of creatures moves.
+    /// Cyclic list of object moves.
     /// Bad moves are ignored - use DirectionParser.
     /// First move is for first creature, second for second and so on.
     /// When all creatures make moves,
@@ -37,9 +36,9 @@ public class Simulation
     public bool Finished = false;
 
     /// <summary>
-    /// Creature which will be moving current turn.
+    /// Object which will be moving current turn.
     /// </summary>
-    public Creature CurrentCreature
+    public IMappable CurrentCreature
     {
         get
         {
@@ -76,11 +75,11 @@ public class Simulation
     /// <summary>
     /// Simulation constructor.
     /// Throw errors:
-    /// if creatures' list is empty,
-    /// if number of creatures differs from
+    /// if objects' list is empty,
+    /// if number of objects differs from
     /// number of starting positions.
     /// </summary>
-    public Simulation(Map map, List<Creature> creatures, List<Point> positions, string moves)
+    public Simulation(Map map, List<IMappable> creatures, List<Point> positions, string moves)
     {
         Map = map ?? throw new ArgumentNullException(nameof(map));
         Creatures = creatures ?? throw new ArgumentNullException(nameof(creatures));
@@ -97,12 +96,12 @@ public class Simulation
             throw new ArgumentException("Number of creatures must match number of starting positions.", nameof(positions));
         }
 
-        // Place creatures on the map at starting positions.
+        // Place objects on the map at starting positions.
         for (var i = 0; i < Creatures.Count; i++)
         {
-            var creature = Creatures[i];
+            var mappable = Creatures[i];
             var position = Positions[i];
-            Map.Add(creature, position);
+            Map.Add(mappable, position);
         }
 
         _directions = DirectionParser.Parse(Moves);
@@ -115,7 +114,7 @@ public class Simulation
     }
 
     /// <summary>
-    /// Makes one move of current creature in current direction.
+    /// Makes one move of current object in current direction.
     /// Throw error if simulation is finished.
     /// </summary>
     public void Turn()
@@ -138,4 +137,3 @@ public class Simulation
         }
     }
 }
-

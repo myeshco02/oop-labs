@@ -3,7 +3,7 @@ using Simulator.Maps;
 
 namespace Simulator.Creatures;
 
-public abstract class Creature
+public abstract class Creature : IMappable
 {
     private string _name = "Unknown";
     private int _level = 1;
@@ -32,6 +32,18 @@ public abstract class Creature
     {
         get => _position;
         internal set => _position = value;
+    }
+
+    Map? IMappable.Map
+    {
+        get => Map;
+        set => Map = value;
+    }
+
+    Point? IMappable.Position
+    {
+        get => Position;
+        set => Position = value;
     }
 
     public Creature()
